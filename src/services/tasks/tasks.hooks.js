@@ -5,7 +5,10 @@ module.exports = {
   before: {
     all: [authenticate('jwt')],
     find: [
-      (context) => (console.log('context', context)),
+      (context) => {
+        console.log(context.params.user) //debug purpose
+        console.log(context.params.ability) //debug purpose
+      },
       authorize({
         checkAbilityForInternal: true,
       }) // make sure this hook runs always last
