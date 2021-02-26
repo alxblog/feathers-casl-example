@@ -11,8 +11,6 @@ const defineRulesFor = (user) => {
 	// also see https://casl.js.org/v5/en/guide/define-rules
 	const { can, cannot, rules } = new AbilityBuilder();
 
-	console.log(user.id) //debug purpose
-
 	if (user.role && user.role.name === 'SuperAdmin') {
 		// SuperAdmin can do evil
 		can('manage', 'all');

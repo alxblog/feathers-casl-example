@@ -1,5 +1,4 @@
 // Application hooks that run for every service
-const { defineAbilitiesFor } = require('./services/authentication/authentication.abilities');
 
 module.exports = {
   before: {

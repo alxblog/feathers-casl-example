@@ -1,50 +1,55 @@
 const { authenticate } = require('@feathersjs/authentication').hooks;
 const { authorize } = require('feathers-casl').hooks;
+const { defineAbilitiesFor } = require('../authentication/authentication.abilities')
+
+const availableFields = (context) => {
+  console.log('called')
+  const { rawAttributes } = context.service.Model;
+  return Object.keys(rawAttributes);
+}
+
+const modelName = (context) => {
+  console.log("modelName", context.path)
+  return (context.path)
+}
 
 module.exports = {
   before: {
     all: [authenticate('jwt')],
     find: [
-      (context) => {
-        console.log(context.params.user) //debug purpose
-        console.log(context.params.ability) //debug purpose
-      },
-      authorize({
-        checkAbilityForInternal: true,
-      }) // make sure this hook runs always last
+      authorize() // make sure this hook runs always last
     ],
     get: [
-      authorize({
-        checkAbilityForInternal: true,
-      }) // make sure this hook runs always last
+      authorize() // make sure this hook runs always last
     ],
     create: [
-      authorize({
-        checkAbilityForInternal: true,
-      }) // make sure this hook runs always last
+      authorize() // make sure this hook runs always last
     ],
     update: [
-      authorize({
-        checkAbilityForInternal: true,
-      }) // make sure this hook runs always last
+      authorize() // make sure this hook runs always last
     ],
     patch: [
-      authorize({
-        checkAbilityForInternal: true,
-      }) // make sure this hook runs always last
+      authorize() // make sure this hook runs always last
     ],
     remove: [
-      authorize({
-        checkAbilityForInternal: true,
-      }) // make sure this hook runs always last
+      authorize() // make sure this hook runs always last
     ]
   },
 
   after: {
     all: [
-      authorize({
-        checkAbilityForInternal: true,
-      }), // make sure this hook runs always first
+      context => {
+        // console.log('context', context)
+        const { user } = context.params;
+        console.log('user', user)
+        if (!user) return context;
+        const ability = defineAbilitiesFor(user);
+        context.params.ability = ability;
+        context.params.rules = ability.rules;
+
+        return context;
+      },
+      authorize(), // make sure this hook runs always first
     ],
     find: [],
     get: [],
